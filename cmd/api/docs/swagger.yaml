@@ -1,0 +1,14 @@
+info:
+  contact: {}
+paths:
+  /v1/healthcheck:
+    get:
+      description: this endpoint shows the status of API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Health
+swagger: "2.0"
