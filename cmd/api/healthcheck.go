@@ -1,17 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"encoding/json"
 )
 
-func (app *application) healthcheckHandler(w http.ResponseWriter,r *http.Request){
+func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
 	status := map[string]string{
-		"status" : "available",
+		"status":      "available",
 		"environment": app.config.env,
-		"version" : version,
+		"version":     version,
 	}
-	response,_ := json.MarshalIndent(status," ","\t")
-	fmt.Fprintln(w,string(response))
+	err := app.writeJson(w, http.StatusAccepted, envelope{"health": status}, nil)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }
