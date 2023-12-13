@@ -11,7 +11,7 @@ import (
 // @produce json
 // @schemes http https
 // @Tags Health
-// @Success 200  
+// @Success 200
 // @router /v1/healthcheck [get]
 func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
 	status := map[string]string{

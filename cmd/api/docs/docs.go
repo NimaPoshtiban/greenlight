@@ -30,6 +30,139 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/movies": {
+            "post": {
+                "description": "Create a new movie with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "movies"
+                ],
+                "summary": "Create a new movie",
+                "parameters": [
+                    {
+                        "description": "Request body to create a movie",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.createMovieRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/v1/movies/{id}": {
+            "get": {
+                "description": "Create a new movie with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "movies"
+                ],
+                "summary": "Create a new movie",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.getMovieResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.createMovieRequest": {
+            "type": "object",
+            "required": [
+                "genres",
+                "runtime",
+                "title",
+                "year"
+            ],
+            "properties": {
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "runtime": {
+                    "type": "string",
+                    "format": "utf-8",
+                    "example": "128 mins"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "integer",
+                    "minimum": 1888
+                }
+            }
+        },
+        "main.getMovieResult": {
+            "type": "object",
+            "properties": {
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "runtime": {
+                    "type": "string",
+                    "example": "0"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
         }
     }
 }`

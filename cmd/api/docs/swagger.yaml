@@ -1,3 +1,43 @@
+definitions:
+  main.createMovieRequest:
+    properties:
+      genres:
+        items:
+          type: string
+        type: array
+      runtime:
+        example: 128 mins
+        format: utf-8
+        type: string
+      title:
+        type: string
+      year:
+        minimum: 1888
+        type: integer
+    required:
+    - genres
+    - runtime
+    - title
+    - year
+    type: object
+  main.getMovieResult:
+    properties:
+      genres:
+        items:
+          type: string
+        type: array
+      id:
+        type: integer
+      runtime:
+        example: "0"
+        type: string
+      title:
+        type: string
+      version:
+        type: integer
+      year:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -11,4 +51,53 @@ paths:
           description: OK
       tags:
       - Health
+  /v1/movies:
+    post:
+      consumes:
+      - application/json
+      description: Create a new movie with the provided details
+      parameters:
+      - description: Request body to create a movie
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.createMovieRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+      summary: Create a new movie
+      tags:
+      - movies
+  /v1/movies/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Create a new movie with the provided details
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.getMovieResult'
+        "400":
+          description: Bad Request
+        "404":
+          description: not found
+        "500":
+          description: internal server error
+      summary: Create a new movie
+      tags:
+      - movies
 swagger: "2.0"
