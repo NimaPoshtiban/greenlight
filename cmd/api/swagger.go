@@ -7,7 +7,6 @@ import (
 	"github.com/nimaposhtiban/greenlight/internal/data"
 )
 
-
 type getMovieResult struct {
 	ID        int64     `json:"id"`
 	CreatedAt time.Time `json:"-"`

@@ -3,13 +3,12 @@ package main
 import (
 	"net/http"
 	"time"
-	
+
 	"github.com/nimaposhtiban/greenlight/internal/data"
 	"github.com/nimaposhtiban/greenlight/internal/validator"
 )
 
 // createMovieRequest represents the request body to create a movie.
-
 
 // createMovieHandler handles the HTTP POST request to create a new movie.
 // @Summary Create a new movie
