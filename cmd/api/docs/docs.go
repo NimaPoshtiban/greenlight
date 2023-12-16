@@ -108,7 +108,37 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
+            "delete": {
+                "description": "Delete a  movie with the provided id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "movies"
+                ],
+                "summary": "delete a movie",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "patch": {
                 "description": "Update a movie with the provided details",
                 "consumes": [
                     "application/json"
@@ -134,7 +164,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.createMovieRequest"
+                            "$ref": "#/definitions/main.updateMovieRequest"
                         }
                     }
                 ],
@@ -147,36 +177,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "not found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a  movie with the provided id",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "movies"
-                ],
-                "summary": "delete a movie",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Ok"
-                    },
-                    "400": {
-                        "description": "Bad Request"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -239,6 +239,29 @@ const docTemplate = `{
                 },
                 "year": {
                     "type": "integer"
+                }
+            }
+        },
+        "main.updateMovieRequest": {
+            "type": "object",
+            "properties": {
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "runtime": {
+                    "type": "string",
+                    "format": "utf-8",
+                    "example": "128 mins"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "integer",
+                    "minimum": 1888
                 }
             }
         }

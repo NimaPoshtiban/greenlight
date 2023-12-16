@@ -107,10 +107,11 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 // @Success 200  "Ok"
 // @Failure 400 "Bad Request"
 // @Failure 404 "not found"
+// @Failure 409 "Edit conflict"
 // @Failure 500 "Internal Server Error"
-// @Router /v1/movies/{id} [put]
+// @Router /v1/movies/{id} [patch]
 // @Param id   path int true "id"
-// @Param request body createMovieRequest true "Request body to update a movie"
+// @Param request body updateMovieRequest true "Request body to update a movie"
 func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIdParam(r)
 	if err != nil {
@@ -131,7 +132,7 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	var input createMovieRequest
+	var input updateMovieRequest
 
 	err = app.readJson(w, r, &input)
 	if err != nil {
@@ -139,10 +140,19 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	movie.Title = input.Title
-	movie.Year = input.Year
-	movie.Runtime = input.Runtime
-	movie.Genres = input.Genres
+	if input.Title != nil {
+		movie.Title = *input.Title
+	}
+
+	if input.Year != nil {
+		movie.Year = *input.Year
+	}
+	if input.Runtime != nil {
+		movie.Runtime = *input.Runtime
+	}
+	if input.Genres != nil {
+		movie.Genres = input.Genres
+	}
 
 	v := validator.New()
 	if data.ValidateMovie(v, movie); !v.Valid() {
@@ -153,7 +163,14 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 	err = app.models.Movies.Update(movie)
 
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		switch {
+		case errors.Is(err, data.ErrEditConflict):
+			app.editConflictResponse(w, r)
+
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+		return
 	}
 
 	err = app.writeJson(w, http.StatusOK, envelope{"movie": movie}, nil)
@@ -164,7 +181,7 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 }
 
 // Delete handles the HTTP Delete request to delete a movie.
-// @Summary delete a movie
+// @Summary Delete a movie
 // @Description Delete a  movie with the provided id
 // @BasePath /
 // @Tags movies

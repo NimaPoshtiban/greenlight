@@ -38,6 +38,22 @@ definitions:
       year:
         type: integer
     type: object
+  main.updateMovieRequest:
+    properties:
+      genres:
+        items:
+          type: string
+        type: array
+      runtime:
+        example: 128 mins
+        format: utf-8
+        type: string
+      title:
+        type: string
+      year:
+        minimum: 1888
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -122,7 +138,7 @@ paths:
       summary: Create a new movie
       tags:
       - movies
-    put:
+    patch:
       consumes:
       - application/json
       description: Update a movie with the provided details
@@ -137,7 +153,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/main.createMovieRequest'
+          $ref: '#/definitions/main.updateMovieRequest'
       produces:
       - application/json
       responses:
