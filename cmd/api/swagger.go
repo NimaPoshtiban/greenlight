@@ -17,6 +17,7 @@ type getMovieResult struct {
 	Version   int32     `json:"version"`
 }
 
+// this model is used for put & get
 type createMovieRequest struct {
 	Title   string       `json:"title" validate:"required" maximum:"500"`
 	Year    int32        `json:"year" validate:"required" minimum:"1888" `

@@ -173,8 +173,8 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 // @Failure 400 "Bad Request"
 // @Failure 400 "Bad Request"
 // @Failure 500 "Internal Server Error"
-// @Router /v1/movies/{id} [delete]
 // @Param id   path int true "id"
+// @Router /v1/movies/{id} [delete]
 func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIdParam(r)
 	if err != nil {
