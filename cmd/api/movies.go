@@ -67,8 +67,8 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 // @Produce json
 // @Success 200  {object}  getMovieResult
 // @Failure 400 "Bad Request"
-// @Failure 404 "not found"
-// @Failure 500 "internal server error"
+// @Failure 404 "Not found"
+// @Failure 500 "Internal server error"
 // @Router /v1/movies/{id} [get]
 // @Param id   path int true "id"
 func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +106,7 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 // @Produce json
 // @Success 200  "Ok"
 // @Failure 400 "Bad Request"
-// @Failure 404 "not found"
+// @Failure 404 "Not found"
 // @Failure 409 "Edit conflict"
 // @Failure 500 "Internal Server Error"
 // @Router /v1/movies/{id} [patch]
@@ -216,4 +216,51 @@ func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Reques
 		app.serverErrorResponse(w, r, err)
 	}
 
+}
+
+// @Summary Return a list of movies
+// @Description returns a list of movies based on provided query string
+// @BasePath /
+// @Tags movies
+// @Produce json
+// @Success 200 "Ok"
+// @Failure 422 "Invalid request"
+// @Failure 500 "Internal Server Error"
+// @Param title   query string false "title"
+// @Param genres   query string false "genres"
+// @Param page   query int false "page"
+// @Param page_size   query int false "page_size"
+// @Param sort   query string false "sort"
+// @Router /v1/movies [get]
+func (app *application) listMoviesHandler(w http.ResponseWriter, r *http.Request) {
+	var input listMoviesRequest
+
+	v := validator.New()
+
+	qs := r.URL.Query()
+
+	input.Title = app.readString(qs, "title", "")
+	input.Genres = app.readCSV(qs, "genres", []string{})
+
+	input.Filters.Page = app.readInt(qs, "page", 1, v)
+	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
+	input.Filters.SortSafelist = []string{"id", "title", "year", "runtime", "-id", "-title", "-year", "-runtime"}
+
+	input.Filters.Sort = app.readString(qs, "sort", "id")
+
+	if data.ValidateFilters(v, input.Filters); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	movies, metadata, err := app.models.Movies.GetAll(input.Title, input.Genres, input.Filters)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJson(w, http.StatusOK, envelope{"movies": movies, "metadata": metadata}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }

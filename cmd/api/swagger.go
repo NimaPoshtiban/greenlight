@@ -31,3 +31,9 @@ type updateMovieRequest struct {
 	Runtime *data.Runtime `json:"runtime" swaggertype:"string" format:"utf-8" example:"128 mins"`
 	Genres  []string      `json:"genres" maximum:"5"`
 }
+
+type listMoviesRequest struct {
+	Title    string
+	Genres   []string
+	data.Filters
+}

@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/julienschmidt/httprouter"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/nimaposhtiban/greenlight/internal/validator"
 )
 
 // envelopes a json object
@@ -86,4 +89,39 @@ func (app *application) readJson(w http.ResponseWriter, r *http.Request, dst int
 
 func (app *application) badRequestResponse(w http.ResponseWriter, r *http.Request, err error) {
 	app.errorResponse(w, r, http.StatusBadRequest, err.Error())
+}
+
+func (app *application) readString(qs url.Values, key string, defaultValue string) string {
+	s := qs.Get(key)
+
+	if s == "" {
+		return defaultValue
+	}
+
+	return s
+}
+
+// example.com/v1?x=s,d,p,a
+func (app *application) readCSV(qs url.Values, key string, defaultValue []string) []string {
+	csv := qs.Get(key)
+
+	if csv == "" {
+		return defaultValue
+	}
+	return strings.Split(csv, ",")
+}
+
+func (app *application) readInt(qs url.Values,key string,defaultValue int, v *validator.Validator)int{
+	s := qs.Get(key)
+
+	if s == ""{
+		return defaultValue
+	}
+
+	i,err := strconv.Atoi(s)
+	if err != nil{
+		v.AddError(key, "must be an integer value")
+		return defaultValue
+	}
+	return i
 }

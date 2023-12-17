@@ -32,6 +32,59 @@ const docTemplate = `{
             }
         },
         "/v1/movies": {
+            "get": {
+                "description": "returns a list of movies based on provided query string",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "movies"
+                ],
+                "summary": "Return a list of movies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "title",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "genres",
+                        "name": "genres",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "sort",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "422": {
+                        "description": "Invalid request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new movie with the provided details",
                 "consumes": [
@@ -101,10 +154,10 @@ const docTemplate = `{
                         "description": "Bad Request"
                     },
                     "404": {
-                        "description": "not found"
+                        "description": "Not found"
                     },
                     "500": {
-                        "description": "internal server error"
+                        "description": "Internal server error"
                     }
                 }
             },
@@ -116,7 +169,7 @@ const docTemplate = `{
                 "tags": [
                     "movies"
                 ],
-                "summary": "delete a movie",
+                "summary": "Delete a movie",
                 "parameters": [
                     {
                         "type": "integer",
@@ -176,7 +229,10 @@ const docTemplate = `{
                         "description": "Bad Request"
                     },
                     "404": {
-                        "description": "not found"
+                        "description": "Not found"
+                    },
+                    "409": {
+                        "description": "Edit conflict"
                     },
                     "500": {
                         "description": "Internal Server Error"
