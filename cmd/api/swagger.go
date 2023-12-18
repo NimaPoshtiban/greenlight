@@ -33,7 +33,7 @@ type updateMovieRequest struct {
 }
 
 type listMoviesRequest struct {
-	Title    string
-	Genres   []string
+	Title  string
+	Genres []string
 	data.Filters
 }

@@ -1,9 +1,9 @@
 package data
 
 import (
-	"strings"
-	"math"
 	"github.com/nimaposhtiban/greenlight/internal/validator"
+	"math"
+	"strings"
 )
 
 type Filters struct {
