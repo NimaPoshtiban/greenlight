@@ -222,7 +222,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Registers a new user with the provided info
+      description: Registers a new user with the provided info then sends an welcome
+        email to new user
       parameters:
       - description: Request body to register a user
         in: body
@@ -233,7 +234,7 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
+        "202":
           description: Created
         "400":
           description: Bad Request

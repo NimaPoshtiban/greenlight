@@ -242,7 +242,7 @@ const docTemplate = `{
         },
         "/v1/users": {
             "post": {
-                "description": "Registers a new user with the provided info",
+                "description": "Registers a new user with the provided info then sends an welcome email to new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -265,7 +265,7 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "202": {
                         "description": "Created"
                     },
                     "400": {

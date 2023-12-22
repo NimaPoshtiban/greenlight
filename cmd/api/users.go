@@ -2,20 +2,19 @@ package main
 
 import (
 	"errors"
-	"net/http"
-
 	"github.com/nimaposhtiban/greenlight/internal/data"
 	"github.com/nimaposhtiban/greenlight/internal/validator"
+	"net/http"
 )
 
 // @Summary Register a new user
-// @Description Registers a new user with the provided info
+// @Description Registers a new user with the provided info then sends an welcome email to new user
 // @BasePath /
 // @Tags users
 // @Accept json
 // @Produce json
 // @Param request body registerUserRequest true "Request body to register a user"
-// @Success 201 "Created"
+// @Success 202 "Created"
 // @Failure 400 "Bad Request"
 // @Failure 422 "Failed Model Validation"
 // @Failure 500 "Internal Server Error"
@@ -59,7 +58,15 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 			app.serverErrorResponse(w, r, err)
 		}
 	}
-	err = app.writeJson(w, http.StatusCreated, envelope{"user": user}, nil)
+
+	app.background(func() {
+		err = app.mailer.Send(user.Email, "user_welcome.tmpl", user)
+		if err != nil {
+			app.logger.PrintError(err, nil)
+		}
+	})
+
+	err = app.writeJson(w, http.StatusAccepted, envelope{"user": user}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
