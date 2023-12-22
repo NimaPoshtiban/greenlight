@@ -38,6 +38,19 @@ definitions:
       year:
         type: integer
     type: object
+  main.registerUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
   main.updateMovieRequest:
     properties:
       genres:
@@ -205,4 +218,30 @@ paths:
       summary: Update a  movie
       tags:
       - movies
+  /v1/users:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user with the provided info
+      parameters:
+      - description: Request body to register a user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.registerUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "422":
+          description: Failed Model Validation
+        "500":
+          description: Internal Server Error
+      summary: Register a new user
+      tags:
+      - users
 swagger: "2.0"

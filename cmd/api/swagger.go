@@ -37,3 +37,9 @@ type listMoviesRequest struct {
 	Genres []string
 	data.Filters
 }
+
+type registerUserRequest struct {
+	Name     string `json:"name" validate:"required" maximum:"500"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required" maximum:"72"`
+}
